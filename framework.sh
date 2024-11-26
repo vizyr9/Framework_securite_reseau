@@ -139,9 +139,13 @@ command_ipaddress() {
     echo "    FRAMEWORK - Scanning networks - IP address    "
     echo "=================================================="
     echo
+    echo "IP Address:"
     echo "Executed command: '$ hostname -I'"
     echo "Command ouput: "
     echo $(hostname -I)
+    echo
+    echo "Subnet mask:"
+    echo "Executed command: '$ '"
     echo
     read -p "[ENTER]"
 }
