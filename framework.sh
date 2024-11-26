@@ -1,3 +1,11 @@
+#!/bin/bash
+
+#codes couleur pour l'affichage. Mettre un 1 avant le point virgule met en gras le texte
+red='\033[1;31m'
+white='\033[0;37m'
+
+
+
 show_mainMenu() {
     # Efface l'écran et replace le curseur en haut
     tput clear
@@ -9,7 +17,8 @@ show_mainMenu() {
     echo "2. Scanning networks"
     echo "3. Enumeration"
     echo "4. Gaining access"
-    echo "5. Exit"
+    echo
+    echo "5.                       Exit"
     echo
     echo "Choose an option then press ENTER."
 }
@@ -24,7 +33,8 @@ show_footprintMenu() {
     echo "1. IP Addresses"
     echo "2. whois"
     echo "3. hostname"
-    echo "4. Main menu"
+    echo
+    echo "4.                  Main menu"
     echo
     echo "Choose an option then press ENTER."
 }
@@ -41,7 +51,8 @@ show_scanningNetworksMenu() {
     echo "1. ping"
     echo "2. fping"
     echo "3. nmap"
-    echo "4. main menu"
+    echo
+    echo "4.                          main menu"
     echo
     echo "Choose an option then press ENTER."
 }
@@ -82,12 +93,10 @@ handle_choice_footprintMenu() {
             command_ipaddress
             ;;
         2)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option footprint 2."
+            command_whois
             ;;
         3)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option footprint 3."
+            command_hostname
             ;;
         4)
             tput cup 0 0
@@ -142,10 +151,46 @@ command_ipaddress() {
     echo "IP Address:"
     echo "Executed command: '$ hostname -I'"
     echo "Command ouput: "
-    echo $(hostname -I)
+    echo -e "${red}$(hostname -I)${white}"
     echo
     echo "Subnet mask:"
-    echo "Executed command: '$ '"
+    echo "Executed command: '$ ifconfig'"
+    echo "Extract of the command ouput: "
+    echo -e "${red}$(ifconfig eth0 | grep 'inet ' | cut -d: -f2 | awk '{ print $4}')${white}"
+    echo
+    read -p "[ENTER]"
+}
+
+
+command_whois() {
+    tput clear
+    tput cup 0 0
+    echo "============================================="
+    echo "    FRAMEWORK - Scanning networks - whois    "
+    echo "============================================="
+    echo
+    echo "whois:"
+    read -p "Input domain name: " domainName
+    echo "Executed command: '$ whois $domainName'"
+    echo
+    echo "Command ouput: "
+    echo -e "${red}$(whois $domainName)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
+command_hostname() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Scanning networks - hostname    "
+    echo "================================================"
+    echo
+    echo "hostname:"
+    echo "Executed command: '$ hostname'"
+    echo
+    echo "Command ouput: "
+    echo -e "${red}$(hostname)${white}"
     echo
     read -p "[ENTER]"
 }
