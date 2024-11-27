@@ -121,8 +121,7 @@ handle_choice_scanningNetworksMenu() {
             command_fping
             ;;
         3)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option footprint 3."
+            command_nmap
             ;;
         4)
             tput cup 0 0
@@ -227,15 +226,17 @@ command_nmap() {
     echo "================================================"
     echo
     echo "nmap:"
-    echo "Entrer une adresse ip:"
-    ip_appareil=$(>>)
-    echo "Executed command: '$ sudo nmap -sS ip_appareil"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
     echo
-    echo "Command ouput: "
-    echo -e "${red}$(sudo nmap -sS ip_appareil)${white}"
+    echo "Executed command: '$ sudo nmap -sS $ip_appareil'"
     echo
-    read -p "[ENTER]"
+    echo "Command output: "
+    echo -e "\033[0;31m$(sudo nmap -sS $ip_appareil)\033[0m"
+    echo
+    read -p "[Appuyez sur ENTER pour continuer]"
 }
+
 
 
 run_mainMenu() {
@@ -269,12 +270,6 @@ run_scanningNetworksMenu() {
         fi
     done
 }
-
-
-
-
-
-
 
 # Boucle principale
 run_mainMenu
