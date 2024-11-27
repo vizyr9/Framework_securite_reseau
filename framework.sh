@@ -118,8 +118,7 @@ handle_choice_scanningNetworksMenu() {
             echo "Vous avez choisi l'Option scanning networks 1."
             ;;
         2)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option footprint 2."
+            command_fping
             ;;
         3)
             tput cup 0 0
@@ -145,7 +144,7 @@ command_ipaddress() {
     tput clear
     tput cup 0 0
     echo "=================================================="
-    echo "    FRAMEWORK - Scanning networks - IP address    "
+    echo "    FRAMEWORK - Foot print - IP address    "
     echo "=================================================="
     echo
     echo "IP Address:"
@@ -166,7 +165,7 @@ command_whois() {
     tput clear
     tput cup 0 0
     echo "============================================="
-    echo "    FRAMEWORK - Scanning networks - whois    "
+    echo "    FRAMEWORK - Foot print - whois    "
     echo "============================================="
     echo
     echo "whois:"
@@ -183,7 +182,7 @@ command_hostname() {
     tput clear
     tput cup 0 0
     echo "================================================"
-    echo "    FRAMEWORK - Scanning networks - hostname    "
+    echo "    FRAMEWORK - Foot print - hostname    "
     echo "================================================"
     echo
     echo "hostname:"
@@ -195,9 +194,48 @@ command_hostname() {
     read -p "[ENTER]"
 }
 
+command_fping() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Scanning network - fping    "
+    echo "================================================"
+    echo
+    echo "fping:"
+    IP_ADDR=$(hostname -I | awk '{print $1}')
+    NETMASK=$(ifconfig | grep -w 'netmask' | head -n 1 | awk '{print $4}')
+    echo "Private IP: $IP_ADDR"
+    echo "Netmask: $NETMASK"
+    IFS=. read -r i1 i2 i3 i4 <<< "$IP_ADDR"
+    IFS=. read -r m1 m2 m3 m4 <<< "$NETMASK"
+    network_base="$((i1 & m1)).$((i2 & m2)).$((i3 & m3)).$((i4 & m4))"
+    broadcast="$((i1 | (255 - m1))).$((i2 | (255 - m2))).$((i3 | (255 - m3))).$((i4 | (255 - m4)))"
+    echo "Network range: $network_base - $broadcast"
+    echo "Executed command: '$ sudo fping -s -g "$network_base" "$broadcast" --alive -q"
+    echo
+    echo "Command ouput: "
+    echo -e "${red}$(sudo fping -s -g "$network_base" "$broadcast" --alive -q)${white}"
+    echo
+    read -p "[ENTER]"
+}
 
-
-
+command_nmap() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Scanning network - nmap    "
+    echo "================================================"
+    echo
+    echo "nmap:"
+    echo "Entrer une adresse ip:"
+    ip_appareil=$(>>)
+    echo "Executed command: '$ sudo nmap -sS ip_appareil"
+    echo
+    echo "Command ouput: "
+    echo -e "${red}$(sudo nmap -sS ip_appareil)${white}"
+    echo
+    read -p "[ENTER]"
+}
 
 
 run_mainMenu() {
