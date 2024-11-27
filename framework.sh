@@ -51,8 +51,9 @@ show_scanningNetworksMenu() {
     echo "1. ping"
     echo "2. fping"
     echo "3. nmap"
+    echo "4. traceroute"
     echo
-    echo "4.                          main menu"
+    echo "5.                          main menu"
     echo
     echo "Choose an option then press ENTER."
 }
@@ -124,6 +125,9 @@ handle_choice_scanningNetworksMenu() {
             command_nmap
             ;;
         4)
+            command_traceroute
+            ;;
+        5)
             tput cup 0 0
             echo "Retour au main menu."
             return -1 # Retourne -1 à l'appelant
@@ -232,12 +236,29 @@ command_nmap() {
     echo "Executed command: '$ sudo nmap -sS $ip_appareil'"
     echo
     echo "Command output: "
-    echo -e "\033[0;31m$(sudo nmap -sS $ip_appareil)\033[0m"
+    echo -e "${red}$(sudo nmap -sS $ip_appareil)${white}"
     echo
-    read -p "[Appuyez sur ENTER pour continuer]"
+    read -p "[ENTER]"
 }
 
-
+command_traceroute() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Scanning network - traceroute    "
+    echo "================================================"
+    echo
+    echo "traceroute:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Executed command: '$ traceroute $ip_appareil'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(traceroute $ip_appareil)${white}"
+    echo
+    read -p "[ENTER]"
+}
 
 run_mainMenu() {
     while true; do
@@ -262,7 +283,7 @@ run_footprintMenu() {
 run_scanningNetworksMenu() {
     while true; do
         show_scanningNetworksMenu
-        read -p "Entrez votre choix [1-4]: " choice
+        read -p "Entrez votre choix [1-5]: " choice
         handle_choice_scanningNetworksMenu "$choice"
         # Capture le code de retour de la fonction
         if [ $? -eq 255 ]; then # -1 est représenté comme 255 en Bash
