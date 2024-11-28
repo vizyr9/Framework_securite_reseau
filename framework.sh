@@ -69,21 +69,15 @@ handle_choice_mainMenu() {
             run_scanningNetworksMenu
             ;;
         3)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option 3."
+            # pas de commande implementee
             ;;
         4)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option 4."
+            # pas de commande implementee
             ;;
         5)
-            tput cup 0 0
-            echo "Au revoir!"
             exit 0
             ;;
         *)
-            tput cup 0 0
-            echo "Choix invalide. Veuillez réessayer."
             ;;
     esac
 }
@@ -100,13 +94,9 @@ handle_choice_footprintMenu() {
             command_hostname
             ;;
         4)
-            tput cup 0 0
-            echo "Retour au main menu."
             return -1 # Retourne -1 à l'appelant
             ;;
         *)
-            tput cup 0 0
-            echo "Choix invalide. Veuillez réessayer."
             ;;
     esac
     return 0 # Retourne 0 par défaut si aucune condition spécifique n'est remplie
@@ -115,8 +105,7 @@ handle_choice_footprintMenu() {
 handle_choice_scanningNetworksMenu() {
     case $1 in
         1)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option scanning networks 1."
+            command_ping
             ;;
         2)
             command_fping
@@ -128,13 +117,9 @@ handle_choice_scanningNetworksMenu() {
             command_traceroute
             ;;
         5)
-            tput cup 0 0
-            echo "Retour au main menu."
-            return -1 # Retourne -1 à l'appelant
+            return -1
             ;;
         *)
-            tput cup 0 0
-            echo "Choix invalide. Veuillez réessayer."
             ;;
     esac
     return 0 # Retourne 0 par défaut si aucune condition spécifique n'est remplie
@@ -196,6 +181,27 @@ command_hostname() {
     echo
     read -p "[ENTER]"
 }
+
+
+
+command_ping() {
+    tput clear
+    tput cup 0 0
+    echo "============================================="
+    echo "    FRAMEWORK - Foot print - ping    "
+    echo "============================================="
+    echo
+    echo "ping:"
+    read -p "Input domain name: " domainName
+    read -p "Input number of pings: " nbPings
+    echo "Executed command: '$ ping -c $nbPings $domainName'"
+    echo
+    echo "Command ouput: "
+    echo -e "${red}$(ping -c $nbPings $domainName)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
 
 command_fping() {
     tput clear
