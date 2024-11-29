@@ -69,8 +69,9 @@ show_EnumerationMenu() {
     echo "2. nc"
     echo "3. operating system detection nmap"
     echo "4. banner grabing avec nmap"
+    echo "5. Enumerating user accounts through Nmap"
     echo
-    echo "5.                          main menu"
+    echo "6.                          main menu"
     echo
     echo "Choose an option then press ENTER."
 }
@@ -170,6 +171,9 @@ handle_choice_EnumerationMenu() {
             command_BSnmap
             ;;
         5)
+            command_ennum_nmap
+            ;;
+        6)
             tput cup 0 0
             echo "Retour au main menu."
             return -1 # Retourne -1 à l'appelant
@@ -398,6 +402,27 @@ command_BSnmap() {
     echo
     echo "Command output: "
     echo -e "${red}$(sudo nmap -sV -script=banner $ip_appareil)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
+command_ennum_nmap() {
+    tput clear
+    tput cup 0 0
+    echo "======================================================================="
+    echo "    FRAMEWORK - Enumeration - Enumerating user accounts through Nmap   "
+    echo "======================================================================="
+    echo
+    echo "Enumerating user accounts through Nmap:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Entrer un port:" #généralement 445
+    read -p ">> " port
+    echo "Executing: 'sudo nmap –script smb-enum-users.nse –p $port $ip_appareil'" #445 est un port par defaut
+    echo
+    echo "Command output: "
+    echo -e "${red}$(sudo nmap --script smb-enum-users.nse -p $port $ip_appareil)${white}"
     echo
     read -p "[ENTER]"
 }
