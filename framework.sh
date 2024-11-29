@@ -58,6 +58,23 @@ show_scanningNetworksMenu() {
     echo "Choose an option then press ENTER."
 }
 
+show_EnumerationMenu() {
+    # Efface l'écran et replace le curseur en haut
+    tput clear
+    tput cup 0 0
+    echo "====================================="
+    echo "    FRAMEWORK - Enumeration    "
+    echo "====================================="
+    echo "1. telnet"
+    echo "2. nc"
+    echo "3. operating system detection nmap"
+    echo "4. banner grabing avec nmap"
+    echo
+    echo "5.                          main menu"
+    echo
+    echo "Choose an option then press ENTER."
+}
+
 # Fonction pour exécuter les choix
 handle_choice_mainMenu() {
     tput clear
@@ -69,8 +86,7 @@ handle_choice_mainMenu() {
             run_scanningNetworksMenu
             ;;
         3)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option 3."
+            run_EnumerationMenu
             ;;
         4)
             tput cup 0 0
@@ -115,8 +131,7 @@ handle_choice_footprintMenu() {
 handle_choice_scanningNetworksMenu() {
     case $1 in
         1)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option scanning networks 1."
+            command_ping
             ;;
         2)
             command_fping
@@ -140,7 +155,32 @@ handle_choice_scanningNetworksMenu() {
     return 0 # Retourne 0 par défaut si aucune condition spécifique n'est remplie
 }
 
-
+handle_choice_EnumerationMenu() {
+    case $1 in
+        1)
+            command_telnet
+            ;;
+        2)
+            command_nc
+            ;;
+        3)
+            command_Onmap
+            ;;
+        4)
+            command_BSnmap
+            ;;
+        5)
+            tput cup 0 0
+            echo "Retour au main menu."
+            return -1 # Retourne -1 à l'appelant
+            ;;
+        *)
+            tput cup 0 0
+            echo "Choix invalide. Veuillez réessayer."
+            ;;
+    esac
+    return 0 # Retourne 0 par défaut si aucune condition spécifique n'est remplie
+}
 
 
 command_ipaddress() {
@@ -193,6 +233,25 @@ command_hostname() {
     echo
     echo "Command ouput: "
     echo -e "${red}$(hostname)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
+command_ping() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Scanning network - ping    "
+    echo "================================================"
+    echo
+    echo "ping:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Executed command: '$ ping $ip_appareil'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(ping $ip_appareil)${white}"
     echo
     read -p "[ENTER]"
 }
@@ -260,6 +319,89 @@ command_traceroute() {
     read -p "[ENTER]"
 }
 
+command_telnet() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Enumeration - telnet    "
+    echo "================================================"
+    echo
+    echo "telnet:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Entrer un port:"
+    read -p ">> " port
+    echo
+    echo "Executing: 'telnet $ip_appareil $port'"
+    echo
+    echo "Command output: "
+    # Exécution de la commande telnet et simulation des touches ESC + ENTER
+    { echo -e "\e"; echo -e "\n"; } | telnet "$ip_appareil" "$port"
+    echo
+    read -p "[ENTER]"
+}
+
+command_nc() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Enumeration - Netcat    "
+    echo "================================================"
+    echo
+    echo "Netcat:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Entrer un port:"
+    read -p ">> " port
+    echo
+    echo "Executing: 'nc $ip_appareil $port'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(nc $ip_appareil $port)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
+command_Onmap() {
+    tput clear
+    tput cup 0 0
+    echo "================================================================="
+    echo "    FRAMEWORK - Enumeration - Operating system detection nmap    "
+    echo "================================================================="
+    echo
+    echo "Operating system detection nmap:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Executing: 'sudo nmap -O $ip_appareil -oG -'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(sudo nmap -O $ip_appareil -oG -)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
+command_BSnmap() {
+    tput clear
+    tput cup 0 0
+    echo "================================================================="
+    echo "    FRAMEWORK - Enumeration - Banner Grabing avec nmap    "
+    echo "================================================================="
+    echo
+    echo "Operating system detection nmap:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Executing: 'sudo nmap -sV -script=banner $ip_appareil'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(sudo nmap -sV -script=banner $ip_appareil)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
 run_mainMenu() {
     while true; do
         show_mainMenu
@@ -285,6 +427,18 @@ run_scanningNetworksMenu() {
         show_scanningNetworksMenu
         read -p "Entrez votre choix [1-5]: " choice
         handle_choice_scanningNetworksMenu "$choice"
+        # Capture le code de retour de la fonction
+        if [ $? -eq 255 ]; then # -1 est représenté comme 255 en Bash
+            break
+        fi
+    done
+}
+
+run_EnumerationMenu() {
+    while true; do
+        show_EnumerationMenu
+        read -p "Entrez votre choix [1-5]: " choice
+        handle_choice_EnumerationMenu "$choice"
         # Capture le code de retour de la fonction
         if [ $? -eq 255 ]; then # -1 est représenté comme 255 en Bash
             break
