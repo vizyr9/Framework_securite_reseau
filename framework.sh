@@ -76,6 +76,24 @@ show_EnumerationMenu() {
     echo "Choose an option then press ENTER."
 }
 
+show_GainingAccessMenu() {
+    # Efface l'écran et replace le curseur en haut
+    tput clear
+    tput cup 0 0
+    echo "====================================="
+    echo "    FRAMEWORK - Gaining Access    "
+    echo "====================================="
+    echo "1. FTP"
+    echo "2. "
+    echo "3. "
+    echo "4. "
+    echo "5. "
+    echo
+    echo "6.                          main menu"
+    echo
+    echo "Choose an option then press ENTER."
+}
+
 # Fonction pour exécuter les choix
 handle_choice_mainMenu() {
     tput clear
@@ -90,8 +108,7 @@ handle_choice_mainMenu() {
             run_EnumerationMenu
             ;;
         4)
-            tput cup 0 0
-            echo "Vous avez choisi l'Option 4."
+            run_GainingAccessMenu
             ;;
         5)
             tput cup 0 0
@@ -186,6 +203,35 @@ handle_choice_EnumerationMenu() {
     return 0 # Retourne 0 par défaut si aucune condition spécifique n'est remplie
 }
 
+handle_choice_GainingAccessMenu() {
+    case $1 in
+        1)
+            command_FTP
+            ;;
+        2)
+            
+            ;;
+        3)
+            
+            ;;
+        4)
+            
+            ;;
+        5)
+            
+            ;;
+        6)
+            tput cup 0 0
+            echo "Retour au main menu."
+            return -1 # Retourne -1 à l'appelant
+            ;;
+        *)
+            tput cup 0 0
+            echo "Choix invalide. Veuillez réessayer."
+            ;;
+    esac
+    return 0 # Retourne 0 par défaut si aucune condition spécifique n'est remplie
+}
 
 command_ipaddress() {
     tput clear
@@ -427,6 +473,60 @@ command_ennum_nmap() {
     read -p "[ENTER]"
 }
 
+command_FTP() {
+    # Efface l'écran
+    tput clear
+    tput cup 0 0
+    
+    # Affichage de l'en-tête
+    echo "======================================================================="
+    echo "    FRAMEWORK - Gaining Access - FTP   "
+    echo "======================================================================="
+    echo
+    echo "FTP:"
+    
+    # Demande la liste des mots de passe
+    echo "Entrer une liste de mots de passe (chemin du fichier ou 'nouveau' pour créer) :"
+    read -p ">> " password_list
+    if [[ "$password_list" == "nouveau" ]]; then
+        echo "Entrez les mots de passe, un par ligne. Tapez 'FIN' pour terminer :"
+        password_list="mdp.txt"
+        > "$password_list" # Vide/crée le fichier
+        while true; do
+            read -p "> " password
+            [[ "$password" == "FIN" ]] && break
+            echo "$password" >> "$password_list"
+        done
+        echo "Fichier de mots de passe créé : $password_list"
+    fi
+
+    # Demande la liste des utilisateurs
+    echo "Entrer une liste d'utilisateurs (chemin du fichier ou 'nouveau' pour créer) :"
+    read -p ">> " user_list
+    if [[ "$user_list" == "nouveau" ]]; then
+        echo "Entrez les noms d'utilisateur, un par ligne. Tapez 'FIN' pour terminer :"
+        user_list="users.txt"
+        > "$user_list" # Vide/crée le fichier
+        while true; do
+            read -p "> " user
+            [[ "$user" == "FIN" ]] && break
+            echo "$user" >> "$user_list"
+        done
+        echo "Fichier d'utilisateurs créé : $user_list"
+    fi
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    # Exécution de la commande
+    echo
+    echo "Executing: 'hydra -L /usernames.txt -P /passwords.txt $ip_appareil ftp -V'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(hydra -L /usernames.txt -P /passwords.txt $ip_appareil ftp -V)${white}"
+    # Pause avant de quitter
+    echo
+    read -p "[ENTRÉE]"
+}
+
 run_mainMenu() {
     while true; do
         show_mainMenu
@@ -464,6 +564,18 @@ run_EnumerationMenu() {
         show_EnumerationMenu
         read -p "Entrez votre choix [1-5]: " choice
         handle_choice_EnumerationMenu "$choice"
+        # Capture le code de retour de la fonction
+        if [ $? -eq 255 ]; then # -1 est représenté comme 255 en Bash
+            break
+        fi
+    done
+}
+
+run_GainingAccessMenu() {
+    while true; do
+        show_GainingAccessMenu
+        read -p "Entrez votre choix [1-5]: " choice
+        handle_choice_GainingAccessMenu "$choice"
         # Capture le code de retour de la fonction
         if [ $? -eq 255 ]; then # -1 est représenté comme 255 en Bash
             break
