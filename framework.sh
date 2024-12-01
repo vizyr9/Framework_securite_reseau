@@ -17,8 +17,8 @@ show_mainMenu() {
     echo "2. Scanning networks"
     echo "3. Enumeration"
     echo "4. Gaining access"
-    echo
-    echo "5.                       Exit"
+    echo "5. Automatisation"
+    echo "6.                       Exit"
     echo
     echo "Choose an option then press ENTER."
 }
@@ -84,12 +84,25 @@ show_GainingAccessMenu() {
     echo "    FRAMEWORK - Gaining Access    "
     echo "====================================="
     echo "1. FTP"
-    echo "2. "
-    echo "3. "
+    echo "2. SSH"
+    echo "3. Netcat"
     echo "4. "
     echo "5. "
     echo
     echo "6.                          main menu"
+    echo
+    echo "Choose an option then press ENTER."
+}
+
+show_AutomatisationMenu() {
+    # Efface l'écran et replace le curseur en haut
+    tput clear
+    tput cup 0 0
+    echo "====================================="
+    echo "    FRAMEWORK - Automatisation    "
+    echo "====================================="
+    echo "1. Lancer script"
+    echo "2.                          main menu"
     echo
     echo "Choose an option then press ENTER."
 }
@@ -111,6 +124,9 @@ handle_choice_mainMenu() {
             run_GainingAccessMenu
             ;;
         5)
+            run_AutomatisationMenu
+            ;;
+        6)
             tput cup 0 0
             echo "Au revoir!"
             exit 0
@@ -209,10 +225,10 @@ handle_choice_GainingAccessMenu() {
             command_FTP
             ;;
         2)
-            
+            command_SSH
             ;;
         3)
-            
+            command_NetCat
             ;;
         4)
             
@@ -221,6 +237,24 @@ handle_choice_GainingAccessMenu() {
             
             ;;
         6)
+            tput cup 0 0
+            echo "Retour au main menu."
+            return -1 # Retourne -1 à l'appelant
+            ;;
+        *)
+            tput cup 0 0
+            echo "Choix invalide. Veuillez réessayer."
+            ;;
+    esac
+    return 0 # Retourne 0 par défaut si aucune condition spécifique n'est remplie
+}
+
+handle_choice_AutomatisationMenu() {
+    case $1 in
+        1)
+            command_Automatisation
+            ;;
+        2)
             tput cup 0 0
             echo "Retour au main menu."
             return -1 # Retourne -1 à l'appelant
@@ -527,10 +561,122 @@ command_FTP() {
     read -p "[ENTRÉE]"
 }
 
+command_SSH() {
+    # Efface l'écran
+    tput clear
+    tput cup 0 0
+    
+    # Affichage de l'en-tête
+    echo "======================================================================="
+    echo "    FRAMEWORK - Gaining Access - SSH   "
+    echo "======================================================================="
+    echo
+    echo "SSH:"
+    
+    # Demande la liste des mots de passe
+    echo "Entrer une liste de mots de passe (chemin du fichier ou 'nouveau' pour créer) :"
+    read -p ">> " password_list
+    if [[ "$password_list" == "nouveau" ]]; then
+        echo "Entrez les mots de passe, un par ligne. Tapez 'FIN' pour terminer :"
+        password_list="mdp.txt"
+        > "$password_list" # Vide/crée le fichier
+        while true; do
+            read -p "> " password
+            [[ "$password" == "FIN" ]] && break
+            echo "$password" >> "$password_list"
+        done
+        echo "Fichier de mots de passe créé : $password_list"
+    fi
+
+    # Demande la liste des utilisateurs
+    echo "Entrer une liste d'utilisateurs (chemin du fichier ou 'nouveau' pour créer) :"
+    read -p ">> " user_list
+    if [[ "$user_list" == "nouveau" ]]; then
+        echo "Entrez les noms d'utilisateur, un par ligne. Tapez 'FIN' pour terminer :"
+        user_list="users.txt"
+        > "$user_list" # Vide/crée le fichier
+        while true; do
+            read -p "> " user
+            [[ "$user" == "FIN" ]] && break
+            echo "$user" >> "$user_list"
+        done
+        echo "Fichier d'utilisateurs créé : $user_list"
+    fi
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    # Exécution de la commande
+    echo
+    echo "Executing: 'hydra -L usernames.txt -P passwords.txt $ip_appareil ssh -V'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(hydra -L usernames.txt -P passwords.txt $ip_appareil ssh -V)${white}"
+    # Pause avant de quitter
+    echo
+    read -p "[ENTRÉE]"
+}
+
+command_NetCat() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Gaining Access - Netcat    "
+    echo "================================================"
+    echo
+    echo "Netcat:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Entrer un port:"
+    read -p ">> " port
+    echo
+    echo "Executing: 'nc $ip_appareil $port'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(nc $ip_appareil $port)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
+command_NetCat() {
+    tput clear
+    tput cup 0 0
+    echo "================================================"
+    echo "    FRAMEWORK - Gaining Access - Netcat    "
+    echo "================================================"
+    echo
+    echo "Netcat:"
+    echo "Entrer une adresse IP:"
+    read -p ">> " ip_appareil
+    echo
+    echo "Entrer un port:"
+    read -p ">> " port
+    echo
+    echo "Executing: 'nc $ip_appareil $port'"
+    echo
+    echo "Command output: "
+    echo -e "${red}$(nc $ip_appareil $port)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
+command_Automatisation() {
+    tput clear
+    tput cup 0 0
+    echo "====================================="
+    echo "    FRAMEWORK - Automatisation    "
+    echo "====================================="
+    echo
+    echo "Automatisation:"
+    echo "Command output: "
+    echo -e "${red}$(./script.sh)${white}"
+    echo
+    read -p "[ENTER]"
+}
+
 run_mainMenu() {
     while true; do
         show_mainMenu
-        read -p "Entrez votre choix [1-5]: " choice
+        read -p "Entrez votre choix [1-6]: " choice
         handle_choice_mainMenu "$choice"
     done
 }
@@ -576,6 +722,18 @@ run_GainingAccessMenu() {
         show_GainingAccessMenu
         read -p "Entrez votre choix [1-5]: " choice
         handle_choice_GainingAccessMenu "$choice"
+        # Capture le code de retour de la fonction
+        if [ $? -eq 255 ]; then # -1 est représenté comme 255 en Bash
+            break
+        fi
+    done
+}
+
+run_AutomatisationMenu() {
+    while true; do
+        show_AutomatisationMenu
+        read -p "Entrez votre choix [1-6]: " choice
+        handle_choice_AutomatisationMenu "$choice"
         # Capture le code de retour de la fonction
         if [ $? -eq 255 ]; then # -1 est représenté comme 255 en Bash
             break
