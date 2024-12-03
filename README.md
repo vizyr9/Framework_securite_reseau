@@ -6,4 +6,9 @@
 
 ## Manuel d'utilisation
 
+Pour lancer l'outil il suffit d'exécuter la commande\
+``$ bash ./framework.sh``
+
+Le framework fonctionne avec des sous menus.
+
 - Mettre le dossier "Vulnerability database" au même niveau que le fichier script.sh
