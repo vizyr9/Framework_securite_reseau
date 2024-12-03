@@ -1,4 +1,3 @@
-#!/bin/bash
 #Script d'automatisation des seances de TP en securite des reseaux informatiques en entreprise
 
 #fonctions
@@ -55,6 +54,11 @@ function search_local_vulnerabilities() {
 IP_USER=$(ifconfig wlp1s0 | grep 'inet ' | cut -d: -f2 | awk '{ print $2}')
 SUBNET_MASK=$(ifconfig wlp1s0 | grep 'inet ' | cut -d: -f2 | awk '{ print $4}')
 
+if [[ -z "$IP_USER" || -z "$SUBNET_MASK" ]]; then
+    # Si les commandes précédentes échouent (IP_USER ou SUBNET_MASK vide), essayez avec eth0
+    IP_USER=$(ifconfig eth0 | grep 'inet ' | cut -d: -f2 | awk '{ print $2}')
+    SUBNET_MASK=$(ifconfig eth0 | grep 'inet ' | cut -d: -f2 | awk '{ print $4}')
+fi
 
 echo "Adresse IP de l'utilisateur sur le reseau: $IP_USER"
 echo "Masque réseau: $SUBNET_MASK"
