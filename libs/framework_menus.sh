@@ -1,10 +1,10 @@
 show_mainMenu() {
     # Efface l'écran et replace le curseur en haut
-    tput clear
-    tput cup 0 0
-    echo "============================="
-    echo "    FRAMEWORK - MAIN MENU    "
-    echo "============================="
+    # tput clear
+    # tput cup 0 0
+    # echo "============================="
+    # echo "    FRAMEWORK - MAIN MENU    "
+    # echo "============================="
     echo "1. Footprint"
     echo "2. Scanning networks"
     echo "3. Enumeration"
@@ -12,7 +12,6 @@ show_mainMenu() {
     echo "5. Automatisation"
     echo "6. Exit"
     echo
-    echo "Choose an option then press ENTER."
 }
 
 show_footprintMenu() {
@@ -28,7 +27,6 @@ show_footprintMenu() {
     echo
     echo "5. Main menu"
     echo
-    echo "Choose an option then press ENTER."
 }
 
 
@@ -47,7 +45,6 @@ show_scanningNetworksMenu() {
     echo
     echo "5. main menu"
     echo
-    echo "Choose an option then press ENTER."
 }
 
 
@@ -67,7 +64,6 @@ show_EnumerationMenu() {
     echo
     echo "6. main menu"
     echo
-    echo "Choose an option then press ENTER."
 }
 
 show_GainingAccessMenu() {
@@ -85,7 +81,6 @@ show_GainingAccessMenu() {
     echo
     echo "6. main menu"
     echo
-    echo "Choose an option then press ENTER."
 }
 
 show_AutomatisationMenu() {
@@ -98,5 +93,4 @@ show_AutomatisationMenu() {
     echo "1. Lancer script"
     echo "2. main menu"
     echo
-    echo "Choose an option then press ENTER."
 }
