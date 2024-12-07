@@ -80,10 +80,11 @@ show_GainingAccessMenu() {
     echo "1. FTP"
     echo "2. SSH"
     echo "3. Netcat"
-    echo "4. "
-    echo "5. "
-    echo
-    echo "6. main menu"
+    echo "4. Metasploit-vsftpd"
+    echo "5. Metasploit-ssh"
+    echo "6. Metasploit-samba"
+    echo "7. Metasploit-java-rmi"
+    echo "8. main menu"
     echo
     echo "Choose an option then press ENTER."
 }

